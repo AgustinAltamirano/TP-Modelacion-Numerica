@@ -1,76 +1,65 @@
-def newton_rhapson(f, vi):
-    pass
+import math
 
-def gauss_seidel_sin_amortiguamiento(c, y_n, z_n, masa, constante_elastica, paso, b):
-    semilla_y, semilla_z = siguiente_valor_de_euler_explicito_sin_amortiguamiento(c, y_n, z_n, masa, constante_elastica, paso)
-    y_anterior = semilla_y
-    z_anterior = semilla_z
+MASA = 110691 / 200
+CONSTANTE_ELASTICA = 25000
+CONSTANTE_AMORTIGUAMIENTO = 0
+Y_INICIAL = 0.5
+Z_INICIAL = 0
+TIEMPO_FINAL = 5
 
-    y_siguiente = 8
-    z_siguiente = 8
+def funcion_de_terreno_constante(t):
+    return 0.1
 
-    while abs(y_siguiente - y_anterior) > 1e-10 and abs(z_siguiente - z_anterior) > 1e-10:
-       y_anterior = y_siguiente
-       z_anterior = z_siguiente
+def gauss_seidel_sin_amortiguamiento(t_actual, y_actual, z_actual, paso, b):
+    c_actual = funcion_de_terreno_constante(t_actual)
+    c_siguiente = funcion_de_terreno_constante(t_actual + paso)
+    semilla_y, semilla_z = siguiente_valor_de_euler_explicito_sin_amortiguamiento(c_actual, y_actual, z_actual, paso)
+    y_siguiente = semilla_y
+    z_siguiente = semilla_z
 
-       y_siguiente = y_n + paso * ((1 - b) * z_n + b * z_siguiente)
-       z_siguiente = z_n + paso * (b * (constante_elastica / masa) * (c - y_siguiente) + (1 - b) * constante_elastica / masa * (c - y_n))
+    for _ in range(25):
+        y_siguiente = y_actual + paso * ((1 - b) * z_actual + b * z_siguiente)
+        z_siguiente = z_actual + paso * (b * (CONSTANTE_ELASTICA / MASA) * (c_siguiente - y_siguiente) + (1 - b) * CONSTANTE_ELASTICA / MASA * (c_actual - y_actual))
     
     return y_siguiente, z_siguiente
 
-def siguiente_valor_de_euler_explicito_sin_amortiguamiento(c, y_n, z_n, masa, constante_elastica, paso):
+def siguiente_valor_de_euler_explicito_sin_amortiguamiento(c, y_n, z_n, paso):
     y_siguiente = y_n + paso * z_n
-    z_siguiente = z_n + paso * (constante_elastica) / masa * (c - y_n)
+    z_siguiente = z_n + paso * CONSTANTE_ELASTICA / MASA * (c - y_n)
     return y_siguiente, z_siguiente
 
-def resolver():
-    y_inicial = 0.5
-    z_inicial = 0
-    masa = 110691 / 200
-    constante_elastica = 25000
-    constante_amortiguamiento = 0
-    c = 0.1
-    tiempo_final = 5
-    paso = 0.005
-    b = 1
+def resolver(paso, b, imprimir_valores_intermedios):
+    y_actual = Y_INICIAL 
+    z_actual = Z_INICIAL
 
-    y_actual = y_inicial 
-    z_actual = z_inicial
+    if imprimir_valores_intermedios:
+        print(f"Avance número {0}, t = {0}, y = {y_actual}")
 
-    print(f"t: {0}, y: {y_actual}, z: {z_actual}")
+    for avance_actual in range(1, int(TIEMPO_FINAL/paso) + 1):
+        t_actual = avance_actual * paso
+        y_actual, z_actual = gauss_seidel_sin_amortiguamiento(t_actual, y_actual, z_actual, paso, b)
+        if imprimir_valores_intermedios:
+            print(f"Avance número {avance_actual}, t = {t_actual}, y = {y_actual}")
+    
+    return y_actual
 
-    for t in range(1, int(tiempo_final/paso) + 1):
-        y_actual, z_actual = gauss_seidel_sin_amortiguamiento(c, y_actual, z_actual, masa, constante_elastica, paso, b)
-        print(f"t: {t}, y: {y_actual}, z: {z_actual}")
 
+def estimar_orden_de_convergencia(paso, b):
+    y_con_paso = resolver(paso, b, False)
+    y_con_mitad_de_paso = resolver(paso/2, b, False)
+    y_con_dieciseisavo_de_paso = resolver(paso/16, b, False)
+
+    return math.log(abs(y_con_mitad_de_paso - y_con_dieciseisavo_de_paso) / abs(y_con_paso - y_con_dieciseisavo_de_paso)) / math.log(0.5)
+    
 
 
 def main():
-    resolver()
-    """"
-    y_inicial = 0.5
-    z_inicial = 0
-    masa = 110691 / 200
-    constante_elastica = 25000
-    constante_amortiguamiento = 0
-    c = 0.1
-    tiempo_final = 5
     paso = 0.005
+    b = 0.5
 
-    y_actual = y_inicial
-    z_actual = z_inicial
-
-    valores_y = []
-    valores_z = []
-
-    print(f"t: {0}, y: {y_actual}, z: {z_actual}")
-
-    for t in range(1, int(tiempo_final/paso) + 1):
-        y_actual, z_actual = siguiente_valor_de_euler_explicito_sin_amortiguamiento(c, y_actual, z_actual, masa, constante_elastica, paso)
-        valores_y.append(y_actual)
-        valores_z.append(z_actual)
-        print(f"t: {t}, y: {y_actual}, z: {z_actual}")"""
-    
+    y_resultado = resolver(paso, b, True)
+    print(f"y = {y_resultado}")
+    print(f"Orden de convergencia: {estimar_orden_de_convergencia(paso, b)}")
 
 if __name__ == "__main__":
     main()
