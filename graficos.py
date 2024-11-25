@@ -68,7 +68,7 @@ def comparar_valores_y(paso, b):
 
 
 def comparar_valores_de_carroceria_con_terreno(paso, b):
-    valores_terreno = [funcion_de_terreno_con_loma_de_burro(i) for i in np.arange(0, 5, paso)]
+    valores_terreno = [funcion_de_terreno_con_loma_de_burro(i) for i in np.arange(0, 5 + paso, paso)]
     _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro,
                                  derivada_de_funcion_de_terreno_con_loma_de_burro)
     diferencia = [y_values_burro[i] - valores_terreno[i] for i in range(len(valores_terreno))]
