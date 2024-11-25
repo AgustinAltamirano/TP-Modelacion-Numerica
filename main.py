@@ -1,18 +1,11 @@
 from sys import argv
-import math
-import time
-import matplotlib.pyplot as plt
-import numpy as np
-from operaciones import gauss_seidel_sin_amortiguamiento, estimar_orden_de_convergencia
+from operaciones import setLambda, setK
 from graficos import graficar_orden_de_convergencia, graficar_valores_y, comparar_tiempos, comparar_valores_y, \
     comparar_valores_de_carroceria_con_terreno
-from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, \
-    funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
+from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante
 
 
 def main(paso, betas):
-    # Genera una cantidad bcant de betas entre bmin y bmax
-
     print("Analisis de respuesta del método para el siguiente conjunto de valores:")
     print("Paso seleccionado: " + str(paso))
     print("Betas a evaluar: " + str(betas))
@@ -63,7 +56,7 @@ def main(paso, betas):
 
 
 def main2(paso, beta):
-    # Comparar valores de y entre terreno constante y loma de burro con beta = 0.5
+    # Comparar valores de y entre terreno constante y loma de burro con beta
     comparar_valores_y(paso, beta)
 
     # Comparar valores de carroceria con terreno
@@ -80,10 +73,14 @@ if __name__ == "__main__":
     # ej2: python3 main.py 2 25000 750 0.005 0.5
     if len(argv) == 6:
         _, ej, val_k, val_l, paso, betas = argv
+
+        setLambda(val_l)
+        setK(val_k)
+
         if argv[1] == "1":
             main(float(paso), list(map(lambda a: float(a), betas.split(','))))
         elif argv[1] == "2":
-            main2(paso, betas)
+            main2(float(paso), float(betas))
         else:
             print("Parametros invalidos")
             exit(1)

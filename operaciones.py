@@ -1,11 +1,19 @@
 import math
 
-CONSTANTE_ELASTICA = 25000
-CONSTANTE_AMORTIGUAMIENTO = 0
 MASA = 110691 / 200
 Y_INICIAL = 0
 Z_INICIAL = 0
 TIEMPO_FINAL = 5
+
+CONSTANTS = {'CONSTANTE_ELASTICA': float(25000), 'CONSTANTE_AMORTIGUAMIENTO': float(0)}
+
+
+def setLambda(v):
+    CONSTANTS['CONSTANTE_AMORTIGUAMIENTO'] = float(v)
+
+
+def setK(v):
+    CONSTANTS['CONSTANTE_ELASTICA'] = float(v)
 
 
 def gauss_seidel_sin_amortiguamiento(t_actual, y_actual, z_actual, paso, b, funcion_de_terreno,
@@ -20,19 +28,20 @@ def gauss_seidel_sin_amortiguamiento(t_actual, y_actual, z_actual, paso, b, func
 
     for _ in range(25):
         y_siguiente = y_actual + paso * ((1 - b) * z_actual + b * z_siguiente)
-        z_siguiente = (1 / (1 + paso * b * CONSTANTE_AMORTIGUAMIENTO / MASA)) * (z_actual + (paso / MASA) * (b * (
-                    CONSTANTE_ELASTICA * (
-                        c_siguiente - y_siguiente) + CONSTANTE_AMORTIGUAMIENTO * c_siguiente_derivada) + (
-                                                                                                                         1 - b) * CONSTANTE_ELASTICA * (
-                                                                                                                         c_actual - y_actual) + CONSTANTE_AMORTIGUAMIENTO * (
-                                                                                                                         c_actual_derivada - z_actual)))
+        z_siguiente = (1 / (1 + paso * b * CONSTANTS['CONSTANTE_AMORTIGUAMIENTO'] / MASA)) * (
+                    z_actual + (paso / MASA) * (b * (
+                    CONSTANTS['CONSTANTE_ELASTICA'] * (
+                    c_siguiente - y_siguiente) + CONSTANTS['CONSTANTE_AMORTIGUAMIENTO'] * c_siguiente_derivada) + (
+                                                        1 - b) * CONSTANTS['CONSTANTE_ELASTICA'] * (
+                                                        c_actual - y_actual) + CONSTANTS['CONSTANTE_AMORTIGUAMIENTO'] * (
+                                                        c_actual_derivada - z_actual)))
 
     return y_siguiente, z_siguiente
 
 
 def siguiente_valor_de_euler_explicito_sin_amortiguamiento(c, y_n, z_n, paso):
     y_siguiente = y_n + paso * z_n
-    z_siguiente = z_n + paso * CONSTANTE_ELASTICA / MASA * (c - y_n)
+    z_siguiente = z_n + paso * CONSTANTS['CONSTANTE_ELASTICA'] / MASA * (c - y_n)
     return y_siguiente, z_siguiente
 
 

@@ -1,8 +1,7 @@
-import math
 import time
 import matplotlib.pyplot as plt
 import numpy as np
-from operaciones import gauss_seidel_sin_amortiguamiento, estimar_orden_de_convergencia, resolver
+from operaciones import estimar_orden_de_convergencia, resolver
 from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, \
     funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
 
