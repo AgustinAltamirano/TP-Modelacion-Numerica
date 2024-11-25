@@ -16,6 +16,14 @@ def setK(v):
     CONSTANTS['CONSTANTE_ELASTICA'] = float(v)
 
 
+def getK():
+    return CONSTANTS['CONSTANTE_ELASTICA']
+
+
+def getLambda():
+    return CONSTANTS['CONSTANTE_AMORTIGUAMIENTO']
+
+
 def gauss_seidel_sin_amortiguamiento(t_actual, y_actual, z_actual, paso, b, funcion_de_terreno,
                                      derivada_de_funcion_de_terreno):
     c_actual = funcion_de_terreno(t_actual)

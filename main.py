@@ -1,5 +1,5 @@
 from sys import argv
-from operaciones import setLambda, setK
+from operaciones import setLambda, setK, getK, getLambda
 from graficos import graficar_orden_de_convergencia, graficar_valores_y, comparar_tiempos, comparar_valores_y, \
     comparar_valores_de_carroceria_con_terreno
 from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante
@@ -23,6 +23,8 @@ def main(paso, betas):
 
     output = open("output.txt", "w")
 
+    output.write("K: " + str(getK()) + "\n")
+    output.write("Lambda: " + str(getLambda()) + "\n")
     output.write("Paso: " + str(paso) + "\n")
     output.write("\n")
 
@@ -34,6 +36,17 @@ def main(paso, betas):
 
     for v, k in t_inv:
         output.write("Beta = " + str(k) + "; Tiempo = " + str(v) + "\n")
+
+    output.write("(peor)\n\n")
+
+    output.write("Orden por convergencia: \n")
+    o_inv = [(v, k) for k, v in ordenes_conv.items()]
+    o_inv.sort(reverse=True)
+
+    output.write("(mejor)\n")
+
+    for v, k in o_inv:
+        output.write("Beta = " + str(k) + "; Orden de conv. = " + str(v) + "\n")
 
     output.write("(peor)\n\n")
 
