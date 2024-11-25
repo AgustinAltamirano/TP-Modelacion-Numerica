@@ -4,8 +4,10 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from operaciones import gauss_seidel_sin_amortiguamiento, estimar_orden_de_convergencia
-from graficos import graficar_orden_de_convergencia, graficar_valores_y, comparar_tiempos, comparar_valores_y, comparar_valores_de_carroceria_con_terreno
-from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
+from graficos import graficar_orden_de_convergencia, graficar_valores_y, comparar_tiempos, comparar_valores_y, \
+    comparar_valores_de_carroceria_con_terreno
+from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, \
+    funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
 
 
 def main(paso, betas):
@@ -16,10 +18,12 @@ def main(paso, betas):
     print("Betas a evaluar: " + str(betas))
 
     # Graficar el orden de convergencia para una serie de betas dadas dependiendo de si es constante o loma de burro
-    ordenes_conv = graficar_orden_de_convergencia(betas, paso, funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante)
+    ordenes_conv = graficar_orden_de_convergencia(betas, paso, funcion_de_terreno_constante,
+                                                  derivada_de_funcion_de_terreno_constante)
 
     # Graficar los valores de y para una serie de betas dados, dependiendo tambien de si es constante o loma de burro
-    puntos_por_b = graficar_valores_y(betas, paso, funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante)
+    puntos_por_b = graficar_valores_y(betas, paso, funcion_de_terreno_constante,
+                                      derivada_de_funcion_de_terreno_constante)
 
     # Comparar tiempos para conseguir beta de una serie de betas dadas, la funcion se le pasa como parametro
     tiempos = comparar_tiempos(betas, paso, funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante)
@@ -30,7 +34,7 @@ def main(paso, betas):
     output.write("\n")
 
     output.write("Orden por tiempo de ejecución: \n")
-    t_inv = [(v,k) for k,v in tiempos.items()]
+    t_inv = [(v, k) for k, v in tiempos.items()]
     t_inv.sort()
 
     output.write("(mejor)\n")
@@ -58,21 +62,31 @@ def main(paso, betas):
     output.close()
 
 
-def main2():
-    pass
+def main2(paso, beta):
     # Comparar valores de y entre terreno constante y loma de burro con beta = 0.5
-    # comparar_valores_y(paso, 0.5)
+    comparar_valores_y(paso, beta)
 
     # Comparar valores de carroceria con terreno
-    # comparar_valores_de_carroceria_con_terreno(paso, 0.5)
+    comparar_valores_de_carroceria_con_terreno(paso, beta)
 
 
 if __name__ == "__main__":
-    # python3 main.py <paso> <betas>
-    # ej: python3 main.py 0.005 0,0.25,0.5,0.75,1
-    if len(argv) == 3:
-        main(float(argv[1]), list(map(lambda a: float(a), argv[2].split(','))))
+    # ejercicio 1
+    # python3 main.py 1 <val k> <val lambda> <paso> <betas>
+    # ej1: python3 main.py 1 25000 0 0.005 0,0.25,0.5,0.75,1
+
+    # ejercicio 2
+    # python3 main.py 2 <val k> <val lambda> <paso> <beta>
+    # ej2: python3 main.py 2 25000 750 0.005 0.5
+    if len(argv) == 6:
+        _, ej, val_k, val_l, paso, betas = argv
+        if argv[1] == "1":
+            main(float(paso), list(map(lambda a: float(a), betas.split(','))))
+        elif argv[1] == "2":
+            main2(paso, betas)
+        else:
+            print("Parametros invalidos")
+            exit(1)
     else:
         print("Numero de argumentos incorrecto")
         exit(1)
-
