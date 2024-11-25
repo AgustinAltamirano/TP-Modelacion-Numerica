@@ -3,13 +3,18 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from operaciones import gauss_seidel_sin_amortiguamiento, estimar_orden_de_convergencia, resolver
-from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
+from funciones_auxiliares import funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante, \
+    funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro
+
 
 def graficar_orden_de_convergencia(betas, paso, funcion_de_terreno, derivada_de_funcion_de_terreno):
     ordenes_de_convergencia = []
 
+    ordenes = {}
+
     for b in betas:
         orden = estimar_orden_de_convergencia(paso, b, funcion_de_terreno, derivada_de_funcion_de_terreno)
+        ordenes[b] = orden
         ordenes_de_convergencia.append(orden)
 
     plt.figure(figsize=(10, 6))
@@ -20,12 +25,18 @@ def graficar_orden_de_convergencia(betas, paso, funcion_de_terreno, derivada_de_
     plt.grid(True)
     plt.show()
 
+    return ordenes
+
+
 def graficar_valores_y(betas, paso, funcion_de_terreno, derivada_de_funcion_de_terreno):
     plt.figure(figsize=(10, 6))
+
+    puntos_por_b = {}
 
     for b in betas:
         _, y_values = resolver(paso, b, False, funcion_de_terreno, derivada_de_funcion_de_terreno)
         t_values = [i * paso for i in range(len(y_values))]
+        puntos_por_b[b] = (t_values, y_values)
         plt.plot(t_values, y_values, label=f'b = {b}')
 
     plt.title('Comparación de valores de y con diferentes valores de beta')
@@ -35,10 +46,14 @@ def graficar_valores_y(betas, paso, funcion_de_terreno, derivada_de_funcion_de_t
     plt.grid(True)
     plt.show()
 
-def comparar_valores_y(paso, b):
+    return puntos_por_b
 
-    _, y_values_constante = resolver(paso, b, False, funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante)
-    _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro)
+
+def comparar_valores_y(paso, b):
+    _, y_values_constante = resolver(paso, b, False, funcion_de_terreno_constante,
+                                     derivada_de_funcion_de_terreno_constante)
+    _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro,
+                                 derivada_de_funcion_de_terreno_con_loma_de_burro)
 
     t_values = [i * paso for i in range(len(y_values_constante))]
 
@@ -54,9 +69,9 @@ def comparar_valores_y(paso, b):
 
 
 def comparar_valores_de_carroceria_con_terreno(paso, b):
-
     valores_terreno = [funcion_de_terreno_con_loma_de_burro(i) for i in np.arange(0, 5, paso)]
-    _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro, derivada_de_funcion_de_terreno_con_loma_de_burro)
+    _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro,
+                                 derivada_de_funcion_de_terreno_con_loma_de_burro)
     diferencia = [y_values_burro[i] - valores_terreno[i] for i in range(len(valores_terreno))]
 
     t_values = [i * paso for i in range(len(valores_terreno))]
@@ -75,6 +90,7 @@ def comparar_valores_de_carroceria_con_terreno(paso, b):
 
     plt.show()
 
+
 def comparar_tiempos(betas, paso, funcion_de_terreno, derivada_de_funcion_de_terreno):
     tiempos = []
 
@@ -91,3 +107,5 @@ def comparar_tiempos(betas, paso, funcion_de_terreno, derivada_de_funcion_de_ter
     plt.ylabel('Tiempo de ejecución (segundos)')
     plt.grid(True)
     plt.show()
+
+    return {betas[i]: tiempos[i] for i in range(len(betas))}
