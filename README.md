@@ -9,8 +9,8 @@
 ## Requisitos
 
 - [Python 3](https://www.python.org/)
-- [Matplotlib](https://matplotlib.org/) (instalable con pip3)
-- [NumPy](https://numpy.org/) (instalable con pip3) 
+- [Matplotlib](https://matplotlib.org/) (instalable con `pip install matplotlib`)
+- [NumPy](https://numpy.org/) (instalable con `pip install numpy`) 
 
 ## Uso
 
