@@ -47,25 +47,20 @@ def graficar_valores_y(betas, paso, funcion_de_terreno, derivada_de_funcion_de_t
 
     return puntos_por_b
 
-
 def comparar_valores_y(paso, b):
-    _, y_values_constante = resolver(paso, b, False, funcion_de_terreno_constante,
-                                     derivada_de_funcion_de_terreno_constante)
     _, y_values_burro = resolver(paso, b, False, funcion_de_terreno_con_loma_de_burro,
                                  derivada_de_funcion_de_terreno_con_loma_de_burro)
 
-    t_values = [i * paso for i in range(len(y_values_constante))]
+    t_values = [i * paso for i in range(len(y_values_burro))]
 
     plt.figure(figsize=(10, 6))
-    plt.plot(t_values, y_values_constante, label='Terreno Constante')
     plt.plot(t_values, y_values_burro, label='Loma de Burro')
-    plt.title('Comparación de valores de y entre terreno constante y loma de burro')
+    plt.title('Valores de y para loma de burro')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Valor de y')
     plt.legend()
     plt.grid(True)
     plt.show()
-
 
 def comparar_valores_de_carroceria_con_terreno(paso, b):
     valores_terreno = [funcion_de_terreno_con_loma_de_burro(i) for i in np.arange(0, 5 + paso, paso)]
