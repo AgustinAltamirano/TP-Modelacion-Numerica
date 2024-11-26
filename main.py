@@ -21,6 +21,9 @@ def main(paso, betas):
     # Comparar tiempos para conseguir beta de una serie de betas dadas, la funcion se le pasa como parametro
     tiempos = comparar_tiempos(betas, paso, funcion_de_terreno_constante, derivada_de_funcion_de_terreno_constante)
 
+    for b in betas:
+        print(f"Resultado final para beta = {b}: y = {puntos_por_b[b][1][-1]}")
+
     output = open("output.txt", "w")
 
     output.write("K: " + str(getK()) + "\n")
@@ -70,7 +73,9 @@ def main(paso, betas):
 
 def main2(paso, beta):
     # Comparar valores de y entre terreno constante y loma de burro con beta
-    comparar_valores_y(paso, beta)
+    y_final = comparar_valores_y(paso, beta)
+
+    print(f"Resultado final para beta = {beta}: y = {y_final}")
 
     # Comparar valores de carroceria con terreno
     comparar_valores_de_carroceria_con_terreno(paso, beta)
